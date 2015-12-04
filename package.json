@@ -1,0 +1,38 @@
+{
+  "name": "base-list",
+  "description": "base-runner plugin that prompts the user to choose from a list of registered applications and their available tasks.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/jonschlinkert/base-list",
+  "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
+  "repository": "jonschlinkert/base-list",
+  "bugs": {
+    "url": "https://github.com/jonschlinkert/base-list/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js",
+    "utils.js"
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "ansi-cyan": "^0.1.1",
+    "arr-union": "^3.0.0",
+    "lazy-cache": "^0.2.4",
+    "question-cache": "^0.3.3",
+    "union-value": "^0.2.1"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  },
+  "verb": {
+    "related": {
+      "list": []
+    }
+  }
+}
