@@ -21,14 +21,18 @@
     "test": "mocha"
   },
   "dependencies": {
-    "ansi-cyan": "^0.1.1",
+    "ansi-colors": "^0.1.0",
     "arr-union": "^3.0.0",
+    "base-tree": "^0.1.0",
+    "extend-shallow": "^2.0.1",
     "lazy-cache": "^0.2.4",
     "question-cache": "^0.3.3",
     "union-value": "^0.2.1"
   },
   "devDependencies": {
-    "mocha": "*"
+    "assemble-core": "^0.5.0",
+    "mocha": "*",
+    "should": "^7.1.1"
   },
   "verb": {
     "related": {
