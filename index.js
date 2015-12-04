@@ -8,16 +8,23 @@
 'use strict';
 
 var utils = require('./utils');
-var union = require('union-value');
 
-module.exports = function(options) {
+/**
+ * Build grouped lists of tasks.
+ *
+ * @param {String} `prop` e.g. `generators`
+ * @param {String} `options`
+ */
+
+module.exports = function(prop, options) {
   var Questions = utils.Questions;
+
   return function(app) {
     app.define('list', function(cb) {
       var questions = new Questions(this.options);
-      var choices = utils.list(this[options.plural]);
+      var choices = buildList(this[prop]);
       var results = {};
-      results[options.plural] = {};
+      results[prop] = {};
 
 
       if (!choices.length) {
@@ -27,7 +34,7 @@ module.exports = function(options) {
       }
 
       var question = {};
-      question[options.plural] = {
+      question[prop] = {
         message: 'Pick the ' + options.method + ' and tasks to run',
         type: 'checkbox',
         choices: choices
@@ -36,13 +43,47 @@ module.exports = function(options) {
       questions.ask(question, function(err, answers) {
         if (err) return cb(err);
 
-        answers[options.plural].forEach(function(answer) {
+        answers[prop].forEach(function(answer) {
           var segs = answer.split(':');
           if (segs.length === 1) return;
-          union(results[options.plural], segs[0], (segs[1] || 'default').split(','));
+          union(results[prop], segs[0], (segs[1] || 'default').split(','));
         });
         return cb(null, results);
       });
     });
+
+    /**
+     * Return a list of "apps" (generators, updaters, etc) and
+     * their tasks
+     */
+
+    function buildList(apps) {
+      var list = [];
+      for (var key in apps) {
+        var app = apps[key];
+        if (!Object.keys(app.tasks).length) {
+          continue;
+        }
+
+        var hasDefault = app.tasks['default'];
+        var name = app.name || app.options.name;
+        var item = {
+          name: name + (hasDefault ? ' (default)' : ''),
+          value: key,
+          short: name + (hasDefault ? ':default' : '')
+        };
+
+        list.push(item);
+        for (var task in app.tasks) {
+          if (task === 'default') continue;
+          list.push({
+            name: ' - ' + task,
+            value: key + ':' + task,
+            short: key + ':' + task
+          });
+        }
+      }
+      return list;
+    }
   }
 };
