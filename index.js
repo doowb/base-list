@@ -23,7 +23,7 @@ module.exports = function(prop, options) {
   return function(app) {
 
     var appColor = options.appColor || 'cyan';
-    var depColor = options.taskColor || 'gray';
+    var depColor = options.depColor || 'gray';
     var taskColor = options.taskColor || 'green';
 
     var treeOpts = {
@@ -36,6 +36,17 @@ module.exports = function(prop, options) {
     };
 
     app.use(utils.tree(treeOpts));
+
+    /**
+     * Display the application hierarchy of apps and tasks in a formatted tree.
+     *
+     * ```js
+     * app.displayTasks()
+     * ```
+     * @api public
+     * @name  displayTasks
+     */
+
     app.define('displayTasks', function() {
       var tree = this.hierarchy();
       var list = renderApp(tree, ' ', 0);
@@ -45,7 +56,23 @@ module.exports = function(prop, options) {
       console.log(output);
     });
 
-    app.define('taskList', function(cb) {
+    /**
+     * Present a multiple choice list of apps and tasks to run.
+     * Return results from a user making choices.
+     *
+     * ```js
+     * app.chooseTasks(function(err, results) {
+     *   if (err) return console.error(err);
+     *   console.log(results);
+     * });
+     * ```
+     *
+     * @param  {Function} `cb` Callback function that will return any errors or the results of the user choices.
+     * @api public
+     * @name  chooseTasks
+     */
+
+    app.define('chooseTasks', function(cb) {
       var questions = new Questions(this.options);
       var tree = this.hierarchy();
       var choices = toChoices(tree);
@@ -82,6 +109,10 @@ module.exports = function(prop, options) {
     /**
      * Return a tree of "apps" (generators, updaters, etc) and
      * their tasks
+     *
+     * @param {Object} `app` Application instance containing "apps" and tasks.
+     * @param {Object} `options` Additional options controlling output.
+     * @return {Object} Tree of "apps" and their tasks.
      */
 
     function buildTree(app, options) {
@@ -120,13 +151,11 @@ module.exports = function(prop, options) {
     }
 
     /**
-     * Transform tree nodes into a list of choices.
+     * Transform tree into a list of choices.
      * Prefix choices with special characters based on their position in the tree.
      * Color lines based on their type (app or task)
      *
      * @param  {Object} `tree` Tree object generated from buildTree function.
-     * @param  {String} `prefix` prepend a prefix to the label
-     * @param  {Boolean} `last` true if last item in an array.
      * @return {Array} List of choices to pass to questions
      */
 
@@ -148,7 +177,6 @@ module.exports = function(prop, options) {
       var label = prefix + '';
       if (last === true) label += '└─';
       else if (typeof last !== 'undefined') label += '├─';
-      // label += utils.colors[taskColor]('⚙ ' + task.label);
       label += ' ' + utils.colors[taskColor](task.label);
 
       if (task.metadata.dependencies && task.metadata.dependencies.length) {
@@ -178,8 +206,6 @@ module.exports = function(prop, options) {
       } else if (typeof last !== 'undefined') {
         label += '├─' + (hasChildren ? '┬' : '') + ' ';
       }
-
-      // label += '📱 ' + utils.colors[appColor](app.label) + utils.colors[taskColor](app.hasDefault ? ' (⚙ default)' : '');
       label += utils.colors[appColor](app.label) + utils.colors[taskColor](app.hasDefault ? ' (default)' : '');
 
       item.name = label;
