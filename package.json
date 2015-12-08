@@ -2,11 +2,11 @@
   "name": "base-list",
   "description": "base-runner plugin that prompts the user to choose from a list of registered applications and their available tasks.",
   "version": "0.1.0",
-  "homepage": "https://github.com/jonschlinkert/base-list",
-  "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
-  "repository": "jonschlinkert/base-list",
+  "homepage": "https://github.com/doowb/base-list",
+  "author": "Brian Woodward (https://github.com/doowb)",
+  "repository": "doowb/base-list",
   "bugs": {
-    "url": "https://github.com/jonschlinkert/base-list/issues"
+    "url": "https://github.com/doowb/base-list/issues"
   },
   "license": "MIT",
   "files": [
