@@ -18,8 +18,13 @@ var utils = require('./utils');
 
 module.exports = function(prop, options) {
   var Questions = utils.Questions;
+  var options = options || {};
 
   return function(app) {
+
+    var appColor = options.appColor || 'cyan';
+    var depColor = options.taskColor || 'gray';
+    var taskColor = options.taskColor || 'green';
 
     var treeOpts = {
       name: prop,
@@ -134,11 +139,11 @@ module.exports = function(prop, options) {
       var label = prefix + '';
       if (last === true) label += '└─';
       else if (typeof last !== 'undefined') label += '├─';
-      // label += utils.colors.green('⚙ ' + task.label);
-      label += ' ' + utils.colors.green(task.label);
+      // label += utils.colors[taskColor]('⚙ ' + task.label);
+      label += ' ' + utils.colors[taskColor](task.label);
 
       if (task.metadata.dependencies && task.metadata.dependencies.length) {
-        label += utils.colors.gray(' [' + task.metadata.dependencies.join(', ') + ']');
+        label += utils.colors[depColor](' [' + task.metadata.dependencies.join(', ') + ']');
       }
       item.name = label;
       item.value = task.metadata.value;
@@ -165,8 +170,8 @@ module.exports = function(prop, options) {
         label += '├─' + (hasChildren ? '┬' : '') + ' ';
       }
 
-      // label += '📱 ' + utils.colors.cyan(app.label) + utils.colors.green(app.hasDefault ? ' (⚙ default)' : '');
-      label += utils.colors.cyan(app.label) + utils.colors.green(app.hasDefault ? ' (default)' : '');
+      // label += '📱 ' + utils.colors[appColor](app.label) + utils.colors[taskColor](app.hasDefault ? ' (⚙ default)' : '');
+      label += utils.colors[appColor](app.label) + utils.colors[taskColor](app.hasDefault ? ' (default)' : '');
 
       item.name = label;
       item.value = app.metadata.value;
