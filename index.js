@@ -36,6 +36,15 @@ module.exports = function(prop, options) {
     };
 
     app.use(utils.tree(treeOpts));
+    app.define('displayTasks', function() {
+      var tree = this.hierarchy();
+      var list = renderApp(tree, ' ', 0);
+      var output = list.map(function(item) {
+        return item.name;
+      }).join('\n');
+      console.log(output);
+    });
+
     app.define('taskList', function(cb) {
       var questions = new Questions(this.options);
       var tree = this.hierarchy();
@@ -85,7 +94,6 @@ module.exports = function(prop, options) {
         var hasDefault = app.tasks['default'];
         if (hasDefault) {
           node.hasDefault = true;
-          node.metadata.value = name + ':default';
         }
 
         for (var task in app.tasks) {
@@ -107,6 +115,7 @@ module.exports = function(prop, options) {
           }
         }
       }
+
       return node;
     }
 
@@ -199,12 +208,36 @@ module.exports = function(prop, options) {
       if (!(this instanceof AppNode)) {
         return new AppNode(name);
       }
+      var self = this;
       this.type = 'app';
       this.label = name;
-      this.metadata = {
-        value: name,
-        short: name
-      };
+      this.parent = null;
+      this.metadata = {};
+
+      define(this, 'name', {
+        enumerable: true,
+        get: function() {
+          if (!this.parent) return name;
+          return this.parent.name + '\\.' + name;
+        },
+        set: function(val) {
+          name = val;
+        }
+      });
+
+      define(this.metadata, 'value', {
+        enumerable: true,
+        get: function() {
+          return self.name + (self.hasDefault ? ':default' : '');
+        }
+      });
+
+      define(this.metadata, 'short', {
+        enumerable: true,
+        get: function() {
+          return self.name + (self.hasDefault ? ':default' : '');
+        }
+      });
       this.tasks = [];
       this.nodes = [];
     }
@@ -215,6 +248,7 @@ module.exports = function(prop, options) {
     };
 
     AppNode.prototype.addApp = function(node) {
+      node.parent = this;
       this.nodes.push(node);
       return this;
     };
@@ -223,14 +257,49 @@ module.exports = function(prop, options) {
       if (!(this instanceof TaskNode)) {
         return new TaskNode(task, parent);
       }
-      var name = task.name;
+      var self = this;
+      var name = task.name
+      var value = name;
+      var short = name;
       this.type = 'task';
       this.label = name;
       this.metadata = {
-        value: parent.label + ':' + name,
-        short: parent.label + ':' + name,
         dependencies: task.deps
       };
+
+      define(this, 'name', {
+        enumerable: true,
+        get: function() {
+          return parent.name + ':' + name
+        },
+        set: function(val) {
+          name = val;
+        }
+      });
+
+      define(this.metadata, 'value', {
+        enumerable: true,
+        get: function() {
+          return parent.name + ':' + value;
+        },
+        set: function(val) {
+          value = val;
+        }
+      });
+
+      define(this.metadata, 'short', {
+        enumerable: true,
+        get: function() {
+          return parent.name + ':' + short;
+        },
+        set: function(val) {
+          short = val;
+        }
+      });
     }
   }
 };
+
+function define(obj, key, value) {
+  Object.defineProperty(obj, key, value);
+}
