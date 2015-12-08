@@ -85,7 +85,7 @@ module.exports = function(prop, options) {
 
         for (var task in app.tasks) {
           if (task === 'default') continue;
-          node.addTask(task);
+          node.addTask(app.tasks[task]);
         }
       }
 
@@ -124,7 +124,7 @@ module.exports = function(prop, options) {
       var list = [];
       var len = tasks.length, i = 0;
       while(len--) {
-        list = list.concat(renderTask(tasks[i++], (prefix + (lastApp ? (more === false ? ' ' : '') : '|')), len === 0));
+        list = list.concat(renderTask(tasks[i++], (prefix + (lastApp ? (more === false ? ' ' : '') : '| ')), len === 0));
       }
       return list;
     }
@@ -134,8 +134,12 @@ module.exports = function(prop, options) {
       var label = prefix + '';
       if (last === true) label += '└─';
       else if (typeof last !== 'undefined') label += '├─';
-      label += utils.colors.green(task.label);
+      // label += utils.colors.green('⚙ ' + task.label);
+      label += ' ' + utils.colors.green(task.label);
 
+      if (task.metadata.dependencies && task.metadata.dependencies.length) {
+        label += utils.colors.gray(' [' + task.metadata.dependencies.join(', ') + ']');
+      }
       item.name = label;
       item.value = task.metadata.value;
       item.short = task.metadata.short;
@@ -147,17 +151,22 @@ module.exports = function(prop, options) {
       var len = apps.length, i = 0;
       while (len--) {
         list = list.concat(renderApp(apps[i++], (last === true ? prefix.replace('|', ' ') : prefix) + ' ', depth, len === 0));
-        '┬';
       }
       return list;
     }
 
     function renderApp(app, prefix, depth, last) {
       var item = {};
+      var hasChildren = !!(app.nodes && app.nodes.length);
       var label = prefix + '';
-      if (last === true) label += '└─';
-      else if (typeof last !== 'undefined') label += '├─';
-      label += utils.colors.gray(app.label + (app.hasDefault ? ' (default)' : ''));
+      if (last === true) {
+        label += '└─' + (hasChildren ? '┬' : '') + ' ';
+      } else if (typeof last !== 'undefined') {
+        label += '├─' + (hasChildren ? '┬' : '') + ' ';
+      }
+
+      // label += '📱 ' + utils.colors.cyan(app.label) + utils.colors.green(app.hasDefault ? ' (⚙ default)' : '');
+      label += utils.colors.cyan(app.label) + utils.colors.green(app.hasDefault ? ' (default)' : '');
 
       item.name = label;
       item.value = app.metadata.value;
@@ -195,8 +204,8 @@ module.exports = function(prop, options) {
       this.nodes = [];
     }
 
-    AppNode.prototype.addTask = function(name) {
-      this.tasks.push(new TaskNode(name, this));
+    AppNode.prototype.addTask = function(task) {
+      this.tasks.push(new TaskNode(task, this));
       return this;
     };
 
@@ -205,15 +214,17 @@ module.exports = function(prop, options) {
       return this;
     };
 
-    function TaskNode(name, parent) {
+    function TaskNode(task, parent) {
       if (!(this instanceof TaskNode)) {
-        return new TaskNode(name, parent);
+        return new TaskNode(task, parent);
       }
+      var name = task.name;
       this.type = 'task';
       this.label = name;
       this.metadata = {
         value: parent.label + ':' + name,
-        short: parent.label + ':' + name
+        short: parent.label + ':' + name,
+        dependencies: task.deps
       };
     }
   }
