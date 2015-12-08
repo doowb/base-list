@@ -17,7 +17,6 @@ require('ansi-colors', 'colors');
 require('union-value', 'union');
 require('extend-shallow', 'extend');
 require('question-cache', 'Questions');
-require('ansi-cyan', 'cyan');
 require = fn;
 
 /**
