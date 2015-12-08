@@ -38,7 +38,11 @@
   },
   "verb": {
     "related": {
-      "list": []
+      "list": [
+        "base-tree",
+        "use",
+        "base-methods"
+      ]
     }
   }
 }
