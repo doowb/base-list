@@ -1,4 +1,4 @@
-# base-list [![NPM version](https://badge.fury.io/js/base-list.svg)](http://badge.fury.io/js/base-list)  [![Build Status](https://travis-ci.org/jonschlinkert/base-list.svg)](https://travis-ci.org/jonschlinkert/base-list)
+# base-list [![NPM version](https://badge.fury.io/js/base-list.svg)](http://badge.fury.io/js/base-list)  [![Build Status](https://travis-ci.org/doowb/base-list.svg)](https://travis-ci.org/doowb/base-list)
 
 > base-runner plugin that prompts the user to choose from a list of registered applications and their available tasks.
 
@@ -63,18 +63,18 @@ $ npm i -d && npm test
 
 ## Contributing
 
-Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/jonschlinkert/base-list/issues/new).
+Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/doowb/base-list/issues/new).
 
 ## Author
 
-**Jon Schlinkert**
+**Brian Woodward**
 
-+ [github/jonschlinkert](https://github.com/jonschlinkert)
-+ [twitter/jonschlinkert](http://twitter.com/jonschlinkert)
++ [github/doowb](https://github.com/doowb)
++ [twitter/doowb](http://twitter.com/doowb)
 
 ## License
 
-Copyright © 2015 Jon Schlinkert
+Copyright © 2015 Brian Woodward
 Released under the MIT license.
 
 ***
