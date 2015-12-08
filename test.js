@@ -8,19 +8,20 @@
 'use strict';
 
 /* deps:mocha */
+var Base = require('base-methods');
 var assert = require('assert');
-var should = require('should');
-var baseList = require('./');
+var list = require('./');
 
 describe('baseList', function () {
-  it('should:', function () {
-    baseList('a').should.eql({a: 'b'});
-    baseList('a').should.equal('a');
+  it('should add a displayTasks method to `app`', function () {
+    var app = new Base();
+    app.use(list());
+    assert(typeof app.displayTasks === 'function');
   });
 
-  it('should throw an error:', function () {
-    (function () {
-      baseList();
-    }).should.throw('baseList expects valid arguments');
+  it('should add a chooseTasks method to `app`', function () {
+    var app = new Base();
+    app.use(list());
+    assert(typeof app.chooseTasks === 'function');
   });
 });
