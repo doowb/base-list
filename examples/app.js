@@ -1,6 +1,8 @@
 'use strict';
 
-var list = require('./');
+var list = require('../');
+var async = require('async');
+var get = require('get-value');
 var Assemble = require('assemble-core');
 var assemble = new Assemble({name: 'base'});
 assemble.define('apps', {});
@@ -12,7 +14,25 @@ assemble.use(function fn() {
     return app;
   });
 
+  this.define('getApp', function(name) {
+    if (name === 'base') return this;
+    name = name.split('base.').join('');
+    name = name.split('.').join('.apps.');
+    return get(this.apps, name);
+  });
+
   return fn;
+});
+
+assemble.use(function fn() {
+  this.define('buildAll', function(apps, cb) {
+    var self = this;
+    async.eachOf(apps, function(tasks, name, next) {
+      var app = self.getApp(name);
+      if (!app) return next();
+      app.build(tasks, next);
+    }, cb);
+  });
 });
 
 assemble.use(list('apps', {
@@ -120,7 +140,5 @@ app3.addApp('app-3-A', new Assemble({name: 'app-3-A'}))
       console.log('this is something from app3-A');
     });
 
-assemble.taskList(function(err, answers) {
-  if (err) return console.error(err);
-  console.log(answers);
-});
+
+module.exports = assemble;
