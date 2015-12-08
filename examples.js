@@ -22,12 +22,12 @@ assemble.task('foo', function(cb) {
   cb();
 });
 
-assemble.task('bar', function(cb) {
+assemble.task('bar', ['foo'], function(cb) {
   console.log('this is the bar task');
   cb();
 });
 
-assemble.task('baz', function(cb) {
+assemble.task('baz', ['foo', 'bar'], function(cb) {
   console.log('this is the baz task');
   cb();
 });
