@@ -4,12 +4,15 @@ var list = require('./');
 var Assemble = require('assemble-core');
 var assemble = new Assemble({name: 'base'});
 assemble.define('apps', {});
-assemble.use(function() {
+assemble.use(function fn() {
+  if (!this.apps) this.define('apps', {});
   this.define('addApp', function(name, app) {
     this.apps[name] = app;
     this.run(app);
     return app;
   });
+
+  return fn;
 });
 
 assemble.use(list('apps', {method: 'app'}));
@@ -58,6 +61,11 @@ app1.task('default', function(cb) {
   cb();
 });
 
+app1.addApp('app-1-A', new Assemble({name: 'app-1-A'}))
+    .task('something', function (cb) {
+      console.log('this is something from app1-A');
+    });
+
 app2.task('foo', function(cb) {
   console.log('this is the app-2 foo task');
   cb();
@@ -77,6 +85,11 @@ app2.task('default', function(cb) {
   console.log('this is the app-2 default task');
   cb();
 });
+
+app2.addApp('app-2-A', new Assemble({name: 'app-2-A'}))
+    .task('something', function (cb) {
+      console.log('this is something from app2-A');
+    });
 
 app3.task('foo', function(cb) {
   console.log('this is the app-3 foo task');
@@ -98,6 +111,10 @@ app3.task('default', function(cb) {
   cb();
 });
 
+app3.addApp('app-3-A', new Assemble({name: 'app-3-A'}))
+    .task('something', function (cb) {
+      console.log('this is something from app3-A');
+    });
 
 assemble.taskList(function(err, answers) {
   if (err) return console.error(err);
