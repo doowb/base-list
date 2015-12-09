@@ -167,7 +167,11 @@ module.exports = function(prop, options) {
       var list = [];
       var len = tasks.length, i = 0;
       while(len--) {
-        list = list.concat(renderTask(tasks[i++], (prefix + (lastApp ? (more === false ? ' ' : '') : '| ')), len === 0));
+        list = list.concat(renderTask(tasks[i++],
+          (prefix + (lastApp
+            ? (more === false ? ' ': '')
+            : (more === false ? '  ':'| '))),
+          len === 0));
       }
       return list;
     }
@@ -221,7 +225,7 @@ module.exports = function(prop, options) {
         }
       }
       if (app.tasks && app.tasks.length) {
-        list = list.concat(renderTasks(app.tasks, (typeof last === 'undefined' ? ' ' : prefix + (more ? pad + '|' : ' ') + ' '), more, last));
+        list = list.concat(renderTasks(app.tasks, (typeof last === 'undefined' ? ' ' : prefix + pad + (more ? '|' : ' ') + ' '), more, last));
       }
 
       if (app.nodes && app.nodes.length) {
