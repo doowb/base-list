@@ -160,7 +160,14 @@ module.exports = function(prop, options) {
      */
 
     function toChoices(tree) {
-      return renderApp(tree, ' ', 0);
+      var choices = renderApp(tree, ' ', 0);
+      return choices.map(function(choice) {
+        if (choice.name && Separator.exclude(choice.name)) {
+          return choice;
+        }
+        choice.name.line = '  ' + choice.name.line;
+        return choice.name;
+      });
     }
 
     function renderTasks(tasks, prefix, more, lastApp) {
@@ -212,7 +219,7 @@ module.exports = function(prop, options) {
       }
       label += utils.colors[appColor](app.label) + utils.colors[taskColor](app.hasDefault ? ' (default)' : '');
 
-      item.name = label;
+      item.name = app.hasDefault ? label : new Separator(label);
       item.value = app.metadata.value;
       item.short = app.metadata.short;
 
@@ -335,6 +342,23 @@ module.exports = function(prop, options) {
         }
       });
     }
+
+    /**
+     * Separator class is an implementation from inquirer.
+     */
+
+    function Separator(line) {
+      this.type = 'separator';
+      this.line = line;
+    }
+
+    Separator.prototype.toString = function() {
+      return this.line;
+    };
+
+    Separator.exclude = function(obj) {
+      return obj.type !== 'separator';
+    };
   }
 };
 
