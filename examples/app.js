@@ -16,7 +16,6 @@ assemble.use(function fn() {
 
   this.define('getApp', function(name) {
     if (name === 'base') return this;
-    name = name.split('base.').join('');
     name = name.split('.').join('.apps.');
     return get(this.apps, name);
   });

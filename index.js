@@ -244,10 +244,18 @@ module.exports = function(prop, options) {
         enumerable: true,
         get: function() {
           if (!this.parent) return name;
+          if (this.parent.root) return name;
           return this.parent.name + '\\.' + name;
         },
         set: function(val) {
           name = val;
+        }
+      });
+
+      define(this, 'root', {
+        enumerable: false,
+        get: function() {
+          return this.parent == null;
         }
       });
 
