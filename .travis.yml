@@ -9,5 +9,5 @@ matrix:
   allow_failures:
     - node_js: "0.10"
   node_js: "stable"
-    - before_install:
+    before_install:
       - npm install -g npm@next
