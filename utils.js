@@ -12,10 +12,10 @@ var utils = require('lazy-cache')(require);
 
 var fn = require;
 require = utils;
+require('archy');
 require('base-tree', 'tree');
 require('ansi-colors', 'colors');
 require('union-value', 'union');
-require('extend-shallow', 'extend');
 require('question-cache', 'Questions');
 require = fn;
 

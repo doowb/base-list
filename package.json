@@ -22,11 +22,10 @@
   },
   "dependencies": {
     "ansi-colors": "^0.1.0",
-    "arr-union": "^3.0.0",
-    "base-tree": "^0.1.0",
-    "extend-shallow": "^2.0.1",
-    "lazy-cache": "^0.2.4",
-    "question-cache": "^0.3.3",
+    "archy": "^1.0.0",
+    "base-tree": "^0.2.0",
+    "lazy-cache": "^1.0.3",
+    "question-cache": "^0.3.5",
     "union-value": "^0.2.1"
   },
   "devDependencies": {
