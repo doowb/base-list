@@ -18,7 +18,23 @@ app.use(list());
 
 ## API
 
-### [displayTasks](index.js#L48)
+### [.baseListPlugin](index.js#L26)
+
+Build grouped lists of tasks.
+
+**Params**
+
+* `prop` **{String}**: e.g. `generators`    
+* `options` **{String}**: Additional options to control output styling    
+* `options.appColor` **{String}**: Color to use when displaying the app names.    
+* `options.taskColor` **{String}**: Color to use when displaying task names.    
+* `options.depColor` **{String}**: Color to use when displaying task dependencies.    
+* `options.appMsg` **{String}**: Message to display for the app name. This is a template that may contain `:name` where the app name should be. (defaults to ":name")    
+* `options.taskMsg` **{String}**: Message to display for the task name. This is a template that may contain `:name` and `:deps` where the task name and the task depdencies should be. (defaults to ":name :deps")    
+
+
+
+### [displayTasks](index.js#L57)
 Display the application hierarchy of apps and tasks in a formatted tree.
 
 
@@ -32,7 +48,7 @@ app.displayTasks()
 ```
 
 
-### [chooseTasks](index.js#L69)
+### [chooseTasks](index.js#L78)
 Present a multiple choice list of apps and tasks to run. Return results from a user making choices.
 
 
