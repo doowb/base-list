@@ -14,9 +14,7 @@ assemble.use(function fn() {
   return fn;
 });
 
-assemble.use(list('apps', {
-  method: 'app',
-}));
+assemble.use(list('apps'));
 
 assemble.task('foo', function(cb) {
   console.log('this is the foo task');

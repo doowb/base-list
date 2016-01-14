@@ -10,13 +10,16 @@ assemble.use(function fn() {
   if (!this.apps) this.define('apps', {});
   this.define('addApp', function(name, app) {
     this.apps[name] = app;
+    app.define('parent', this);
     this.run(app);
     return app;
   });
 
   this.define('getApp', function(name) {
     if (name === 'base') return this;
-    name = name.split('.').join('.apps.');
+    name = name.replace(/^base\./, '')
+      .split('.')
+      .join('.apps.');
     return get(this.apps, name);
   });
 
