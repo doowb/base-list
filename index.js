@@ -13,7 +13,14 @@ var utils = require('./utils');
  * Build grouped lists of tasks.
  *
  * @param {String} `prop` e.g. `generators`
- * @param {String} `options`
+ * @param {String} `options` Additional options to control output styling
+ * @param {String} `options.appColor` Color to use when displaying the app names.
+ * @param {String} `options.taskColor` Color to use when displaying task names.
+ * @param {String} `options.depColor` Color to use when displaying task dependencies.
+ * @param {String} `options.appMsg` Message to display for the app name. This is a template that may contain `:name` where the app name should be. (defaults to ":name")
+ * @param {String} `options.taskMsg` Message to display for the task name. This is a template that may contain `:name` and `:deps` where the task name and the task depdencies should be. (defaults to ":name :deps")
+ * @api public
+ * @name baseListPlugin
  */
 
 module.exports = function(prop, options) {
@@ -25,6 +32,8 @@ module.exports = function(prop, options) {
     var appColor = options.appColor || 'cyan';
     var depColor = options.depColor || 'gray';
     var taskColor = options.taskColor || 'green';
+    var appTmpl = options.appMsg || ':name';
+    var taskTmpl = options.taskMsg || ':name :deps';
 
     var treeOpts = {
       names: [prop, 'tasks'],
@@ -113,7 +122,8 @@ module.exports = function(prop, options) {
       lines = lines || utils.archy(tree).split('\n');
 
       var item = {};
-      item.name = lines.shift();
+      item.name = (tree.metadata.type === 'app' ? '\x1b[2D  ' : '') + lines.shift();
+      // item.disabled = !!(tree.metadata.type === 'app');
       item.value = tree.metadata.value;
       item.short = tree.metadata.short;
 
@@ -129,12 +139,14 @@ module.exports = function(prop, options) {
     function getLabel(app) {
       var name = app.name || app.options.name;
       if (app.isApp) {
-        return utils.colors[appColor](name);
+        return utils.colors[appColor](render(appTmpl, {name: name}));
       }
+      var deps = '';
       if (app.deps.length) {
-        return utils.colors[taskColor](name) + ' [' + utils.colors[depColor](app.deps.join()) + ']';
+        deps = utils.colors[depColor]('[' + app.deps.join(', ') + ']');
       }
-      return utils.colors[taskColor](name);
+      name = utils.colors[taskColor](name);
+      return render(taskTmpl, {name: name, deps: deps});
     }
 
     function getMetadata(app, opts) {
@@ -156,6 +168,12 @@ module.exports = function(prop, options) {
 
     function buildTaskName(task) {
       return buildAppName(task.app) + ':' + task.name;
+    }
+
+    function render(msg, ctx) {
+      return Object.keys(ctx).reduce(function(str, prop) {
+        return str.split(':' + prop).join(ctx[prop]);
+      }, msg);
     }
   }
 };
